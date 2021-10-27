@@ -26,6 +26,8 @@ public class EightNumberHelper{
 
     /**
      * 求估计函数f(n) = g(n)+h(n);
+     * 估值函数用当前步数+当前差值
+     * 数据越小越优秀
      * 初始化状态信息
      */
     private void init(EightNumberHelper target){
@@ -224,14 +226,14 @@ public class EightNumberHelper{
         while (!open.isEmpty()){
             //进行从小到大的排序
             open.sort(Comparator.comparingInt(cur -> cur.evaluation));
-            final EightNumberHelper worst = open.get(0);
+            final EightNumberHelper best = open.get(0);
             //从open表内部删除匹配值最低的那个
             //并添加到close表里面
             open.remove(0);
-            close.add(worst);
-            if(worst.isTarget(target)){
+            close.add(best);
+            if(best.isTarget(target)){
                 //输出
-                worst.printRoute();
+                best.printRoute();
                 long end=System.currentTimeMillis(); //获取结束时间
                 print("程序运行时间： "+(end-startTime)+"ms");
                 return;
@@ -240,27 +242,27 @@ public class EightNumberHelper{
             //由best状态进行扩展并加入到open表中
             //0的位置上移之后状态不在close和open中设定best为其父状态，并初始化f(n)估值函数
             //可以上移的话
-            if(worst.isMoveUp()){
+            if(best.isMoveUp()){
                 //上移的标记
                 move=Action.UP;
                 //目标的子状态
-                final var up = worst.moveUp(move);
-                up.operation(open,close,worst,target);
+                final var up = best.moveUp(move);
+                up.operation(open,close,best,target);
             }
-            if(worst.isMoveDown()) {
+            if(best.isMoveDown()) {
                 move = Action.DOWN;
-                final var down = worst.moveUp(move);
-                down.operation(open,close,worst,target);
+                final var down = best.moveUp(move);
+                down.operation(open,close,best,target);
             }
-            if(worst.isMoveRight()){
+            if(best.isMoveRight()){
                 move=Action.RIGHT;
-                final var right = worst.moveUp(move);
-                right.operation(open,close,worst,target);
+                final var right = best.moveUp(move);
+                right.operation(open,close,best,target);
             }
-            if(worst.isMoveLeft()){
+            if(best.isMoveLeft()){
                 move=Action.LEFT;
-                final var left = worst.moveUp(move);
-                left.operation(open,close,worst,target);
+                final var left = best.moveUp(move);
+                left.operation(open,close,best,target);
             }
         }
     }
